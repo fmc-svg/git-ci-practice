@@ -5,18 +5,18 @@ on:
   pull_request:
     branches: [ main ]
 jobs:
-  lint:
+  check-code:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: py-actions/flake8@v2  # ✅ Всё в одном действии
-        with:
-          args: >-
-            --count 
-            --select=E9,F63,F7,F82 
-            --show-source 
-            --statistics 
-            --max-line-length=127
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      - name: Run linter
+        run: flake8 . --count --exit-zero
